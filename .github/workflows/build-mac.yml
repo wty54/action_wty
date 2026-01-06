@@ -22,4 +22,4 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: mac-app-bundle
-        path: action_wty/线路绘图工具高铁版  # Adjust the path according to your output file name and location
+        path: action_wty/drawing_EMU  # Adjust the path according to your output file name and location
