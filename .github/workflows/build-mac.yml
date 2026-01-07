@@ -36,9 +36,6 @@ jobs:
         find . -name "drawing_EMU" -type d 2>/dev/null || true
     - name: Build in debug mode
       run: |
-        cd drawing_EMU
-        echo "现在在: $(pwd)"
-        ls -la
         # 1. 先测试 matplotlib 是否能正常导入
         python -c "
         import matplotlib
