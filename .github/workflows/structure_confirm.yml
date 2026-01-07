@@ -1,0 +1,8 @@
+name: Debug Structure
+on: [push]
+jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: find . -type f -name "*.py" && find . -type d
