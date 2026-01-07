@@ -7,7 +7,7 @@ block_cipher = None
 a = Analysis(['gui_test.py'],
              pathex=[],
              binaries=[],
-             datas=[('favicon.ico','img')],
+             datas=[('favicon.icns','img')],
              hiddenimports=[
              'matplotlib',
              'matplotlib.backends.backend_agg',
@@ -48,4 +48,15 @@ exe = EXE(pyz,
           target_arch=None,
           codesign_identity=None,
           entitlements_file=None , icon='favicon.ico')
-
+app = BUNDLE(
+    exe,
+    name='gui_test.app',
+    icon='favicon.icns',  # macOS 图标文件
+    bundle_identifier='com.wty.plot',
+    info_plist={
+        'NSHighResolutionCapable': 'True',
+        'LSMinimumSystemVersion': '10.13.0',
+        'CFBundleShortVersionString': '1.0.0',
+        'CFBundleVersion': '1.0.0',
+    },
+)
