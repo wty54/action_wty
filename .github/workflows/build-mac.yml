@@ -28,6 +28,12 @@ jobs:
       with:
         name: MyApp
         path: drawing_EMU  # Adjust the path according to your output file name and location
+    - name: List directory structure
+      run: |
+        echo "=== 当前目录结构 ==="
+        ls -la
+        echo "=== 查找 drawing_EMU ==="
+        find . -name "drawing_EMU" -type d 2>/dev/null || true
     - name: Build in debug mode
       run: |
         cd drawing_EMU
