@@ -18,6 +18,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install pyinstaller
+        pip install matplotlib==3.7.1  # 指定版本避免问题
+        pip install numpy pandas python-docx Pillow
+        pip install pyparsing cycler kiwisolver python-dateutil six packaging
     - name: Build with PyInstaller
       run: |
         pyinstaller gui_test.spec
