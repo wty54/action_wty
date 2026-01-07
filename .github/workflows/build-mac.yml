@@ -26,3 +26,11 @@ jobs:
       with:
         name: MyApp
         path: drawing_EMU/dist/  # Adjust the path according to your output file name and location
+    - name: Verify executable
+      run: |
+        cd drawing_EMU
+        echo "=== 验证可执行文件 ==="
+
+        # 方法2：尝试运行并捕获错误
+        echo "尝试运行（可能有 GUI 错误，忽略）:"
+        timeout 5s ./dist/MyApp --version 2>&1 | head -50 || true
