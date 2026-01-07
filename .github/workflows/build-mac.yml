@@ -28,3 +28,32 @@ jobs:
       with:
         name: MyApp
         path: drawing_EMU  # Adjust the path according to your output file name and location
+    - name: Build in debug mode
+      run: |
+        cd drawing_EMU
+        
+        # 1. 先测试 matplotlib 是否能正常导入
+        python -c "
+        import matplotlib
+        print('matplotlib路径:', matplotlib.__file__)
+        import matplotlib.pyplot as plt
+        print('pyplot导入成功')
+        import numpy as np
+        print('numpy导入成功')
+        "
+        
+        # 2. 使用 debug 模式构建
+        pyinstaller --debug all --clean \
+          --onefile \
+          --hidden-import matplotlib \
+          --collect-all matplotlib \
+          gui_test.py
+        
+        # 3. 检查生成的可执行文件
+        echo "=== 检查依赖 ==="
+        otool -L dist/gui_test 2>/dev/null || true
+        
+        # 4. 尝试运行并捕获错误
+        echo "=== 测试运行 ==="
+        cd dist
+        ./gui_test --help 2>&1 | head -50 || ./gui_test 2>&1 | head -100
