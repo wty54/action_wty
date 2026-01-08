@@ -33,6 +33,7 @@ a = Analysis(['gui_test.py'],
              win_no_prefer_redirects=False,
              win_private_assemblies=False,
              cipher=block_cipher,
+             optimize=2,  # pyinstaller 3.6+
              noarchive=False)
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
@@ -46,15 +47,17 @@ exe = EXE(pyz,
           name='地铁线路绘图软件',
           debug=False,
           bootloader_ignore_signals=False,
-          strip=False,
-          upx=True,
+          strip=True,  # 剥离调试符号
+          upx=False,  # 在macOS上可能导致性能问题，建议关闭
           upx_exclude=[],
           runtime_tmpdir=None,
           console=False,
           disable_windowed_traceback=False,
+          argv_emulation=False,  # macOS上建议关闭
           target_arch=None,
           codesign_identity=None,
-          entitlements_file=None , icon='favicon.ico')
+          optimize=2,  # 优化级别
+          entitlements_file=None , icon='favicon.icns')
 app = BUNDLE(
     exe,
     name='地铁线路绘图软件.app',
