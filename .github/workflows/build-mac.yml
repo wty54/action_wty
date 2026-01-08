@@ -38,7 +38,7 @@ jobs:
         find . -name "20250912_drawing_metro" -type d 2>/dev/null || true
     - name: Build in debug mode
       run: |
-        # 1. 先测试 matplotlib 是否能正常导入
+        # 测试 matplotlib 是否能正常导入
         python -c "
         import matplotlib
         print('matplotlib路径:', matplotlib.__file__)
@@ -53,15 +53,52 @@ jobs:
         from PIL import Image
         print('docx, PIL导入成功')
         "
+    - name: Debug performance issues
+      run: |
+        # 创建性能测试脚本
+        cat > performance_test.py << 'EOF'
+        import time
+        import tkinter as tk
+        import matplotlib
+        matplotlib.use('TkAgg')
+        from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+        from matplotlib.figure import Figure
+        import numpy as np
         
-        # 2. 使用 debug 模式构建
-        pyinstaller --debug all --clean \
-          --onefile \
-          --hidden-import matplotlib \
-          --collect-all matplotlib \
-          gui_test.py
+        print("Starting performance test...")
         
-        # 3. 检查生成的可执行文件
-        echo "=== 检查依赖 ==="
-        otool -L dist/地铁线路绘图软件 2>/dev/null || true
+        # 测试 1: tkinter 启动时间
+        start = time.time()
+        root = tk.Tk()
+        root.withdraw()
+        tk_time = time.time() - start
+        print(f"Tkinter startup: {tk_time:.3f}s")
         
+        # 测试 2: matplotlib 启动时间
+        start = time.time()
+        fig = Figure(figsize=(8, 6), dpi=100)
+        ax = fig.add_subplot(111)
+        mpl_time = time.time() - start
+        print(f"Matplotlib startup: {mpl_time:.3f}s")
+        
+        # 测试 3: 绘图性能
+        start = time.time()
+        x = np.linspace(0, 10, 10000)
+        y = np.sin(x)
+        ax.plot(x, y)
+        plot_time = time.time() - start
+        print(f"Plot 10k points: {plot_time:.3f}s")
+        
+        # 测试 4: 渲染性能
+        start = time.time()
+        canvas = FigureCanvasTkAgg(fig, master=root)
+        canvas.draw()
+        render_time = time.time() - start
+        print(f"Render time: {render_time:.3f}s")
+        
+        root.destroy()
+        print("Performance test completed")
+        EOF
+        
+        python performance_test.py
+                  
