@@ -46,6 +46,12 @@ jobs:
         print('pyplot导入成功')
         import numpy as np
         print('numpy导入成功')
+        from docx import Document
+        from docx.shared import Inches
+        from docx.shared import Pt
+        from docx.enum.text import WD_ALIGN_PARAGRAPH
+        from PIL import Image
+        print('docx, PIL导入成功')
         "
         
         # 2. 使用 debug 模式构建
@@ -59,7 +65,3 @@ jobs:
         echo "=== 检查依赖 ==="
         otool -L dist/地铁线路绘图软件 2>/dev/null || true
         
-        # 4. 尝试运行并捕获错误
-        echo "=== 测试运行 ==="
-        cd dist
-        ./地铁线路绘图软件 --help 2>&1 | head -50 || ./gui_test 2>&1 | head -100
