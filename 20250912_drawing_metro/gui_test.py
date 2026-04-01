@@ -195,7 +195,7 @@ def center_window(win):
     # 设置窗口的位置为居中
     win.geometry("{}x{}+{}+{}".format(window_width, window_height, x, y))
 #    win.iconbitmap("favicon.ico")
-    win.iconbitmap(get_path('favicon.ico'))
+    win.iconbitmap(get_path('favicon.icns'))
     
 def get_path(ico_file):  #设置图标
     try:
