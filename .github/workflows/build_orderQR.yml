@@ -23,30 +23,76 @@ jobs:
         pip install docxcompose
     - name: Build with PyInstaller
       run: |
+        # 清理之前的构建
+        rm -rf dist build
+        
+        # 构建应用
         pyinstaller gui_output.spec
-        codesign --force --deep --sign - dist/订单信息生成软件.app
-        hdiutil create -volname "订单信息生成软件" -srcfolder dist/订单信息生成软件.app -ov -format UDZO 订单信息生成软件.dmg
+        
+        # 检查构建是否成功
+        if [ ! -d "dist/订单信息生成软件.app" ]; then
+          echo "❌ Build failed: .app file not found"
+          echo "Files in dist directory:"
+          ls -la dist/
+          exit 1
+        fi
+        
+        echo "✅ Build successful"
+    
+    - name: Code sign (optional)
+      run: |
+        # 只在文件存在时进行签名
+        if [ -d "dist/订单信息生成软件.app" ]; then
+          echo "Signing app..."
+          codesign --force --deep --sign - "dist/订单信息生成软件.app"
+          echo "✅ Code signing completed"
+        else
+          echo "⚠️ App not found, skipping code signing"
+        fi
+    
+    - name: Create DMG
+      run: |
+        # 只在文件存在时创建 DMG
+        if [ -d "dist/订单信息生成软件.app" ]; then
+          echo "Creating DMG..."
+          hdiutil create -volname "订单信息生成软件" \
+            -srcfolder "dist/订单信息生成软件.app" \
+            -ov -format UDZO \
+            "订单信息生成软件.dmg"
+          echo "✅ DMG created"
+          ls -la *.dmg
+        else
+          echo "⚠️ App not found, skipping DMG creation"
+          exit 1
+        fi
+    
     - name: List files after build
       run: |
-        echo "=== Current directory ==="
-        pwd
+        echo "=== Current directory ($(pwd)) ==="
         ls -la
-    
+        
         echo "=== Dist directory ==="
         ls -la dist/ || echo "dist directory not found"
-    
+        
+        echo "=== DMG files ==="
+        ls -la *.dmg 2>/dev/null || echo "No DMG files found"
+        
         echo "=== All .app files ==="
-        find . -name "订单信息生成软件.app" -type d 2>/dev/null || echo "No .app files found"
+        find . -name "*.app" -type d 2>/dev/null || echo "No .app files found"
+    
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: MyApp
-        path: 20260401_orderQR  # Adjust the path according to your output file name and location
-    - name: List directory structure
-      run: |
-        echo "=== 当前目录结构 ==="
-        ls -la
-        echo "=== 查找 20260401_orderQR ==="
-        find . -name "20260401_orderQR" -type d 2>/dev/null || true
+        path: 20260401_orderQR/dist/订单信息生成软件.app
+        # 如果需要上传 DMG，可以添加：
+        # if-no-files-found: error  # 如果文件不存在则失败
+    
+    - name: Upload DMG (optional)
+      uses: actions/upload-artifact@v4
+      with:
+        name: MyApp-DMG
+        path: 20260401_orderQR/订单信息生成软件.dmg
+        if-no-files-found: ignore
 
                   
