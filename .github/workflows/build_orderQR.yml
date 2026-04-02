@@ -26,6 +26,17 @@ jobs:
         pyinstaller gui_output.spec
         codesign --force --deep --sign - dist/订单信息生成软件.app
         hdiutil create -volname "订单信息生成软件" -srcfolder dist/订单信息生成软件.app -ov -format UDZO 订单信息生成软件.dmg
+    - name: List files after build
+      run: |
+        echo "=== Current directory ==="
+        pwd
+        ls -la
+    
+        echo "=== Dist directory ==="
+        ls -la dist/ || echo "dist directory not found"
+    
+        echo "=== All .app files ==="
+        find . -name "订单信息生成软件.app" -type d 2>/dev/null || echo "No .app files found"
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
