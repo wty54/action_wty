@@ -18,8 +18,9 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install pyinstaller
-        pip install pandas --only-binary :all:
-        pip install python-docx docxcomposer
+        pip install pandas
+        pip install python-docx
+        pip install docxcompose
     - name: Build with PyInstaller
       run: |
         pyinstaller gui_output.spec
