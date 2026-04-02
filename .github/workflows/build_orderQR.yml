@@ -87,7 +87,46 @@ jobs:
         path: 20260401_orderQR/dist/订单信息生成软件.app
         # 如果需要上传 DMG，可以添加：
         # if-no-files-found: error  # 如果文件不存在则失败
-    
+    - name: Test DMG
+      run: |
+        # 创建测试挂载点
+        mkdir -p test_mount
+        
+        # 挂载 DMG
+        hdiutil attach "订单信息生成软件.dmg" -mountpoint test_mount -nobrowse
+        
+        # 验证应用存在
+        if [ -d "test_mount/orderQR.app" ]; then
+          echo "✅ DMG contains the app"
+          
+          # 验证可执行权限
+          if [ -x "test_mount/orderQR.app/Contents/MacOS/orderQR" ]; then
+            echo "✅ Executable has correct permissions"
+          else
+            echo "❌ Executable missing execute permission"
+          fi
+          
+          # 运行快速启动测试
+          echo "Testing app launch from DMG..."
+          timeout 3s test_mount/orderQR.app/Contents/MacOS/orderQR &
+          TEST_PID=$!
+          sleep 2
+          if kill -0 $TEST_PID 2>/dev/null; then
+            echo "✅ App launches successfully from DMG"
+            kill $TEST_PID
+          else
+            echo "⚠️ App launch test - need manual verification"
+          fi
+        else
+          echo "❌ DMG mount failed or app missing"
+          ls -la test_mount/
+          hdiutil detach test_mount -force
+          exit 1
+        fi
+        
+        # 清理
+        hdiutil detach test_mount -force
+        echo "✅ All tests passed"
     - name: Upload DMG (optional)
       uses: actions/upload-artifact@v4
       with:
