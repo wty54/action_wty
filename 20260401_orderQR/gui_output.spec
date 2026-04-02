@@ -39,7 +39,7 @@ exe = EXE(pyz,
           entitlements_file=None, icon='favicon.icns')
 app = BUNDLE(
     exe,
-    name='orderQR.app',
+    name='订单信息生成软件.app',
     icon='favicon.icns',  # macOS 图标文件
     bundle_identifier='com.wty.plot',
     info_plist={
