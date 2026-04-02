@@ -5,7 +5,7 @@ block_cipher = None
 a = Analysis(['login.py'],
              pathex=[],
              binaries=[],
-             datas=[('template', 'template'), ('favicon.ico', 'img'), ('E:/Anaconda3/Lib/site-packages/docxcompose/templates/*.*', 'docxcompose/templates')],
+             datas=[('template', 'template'), ('favicon.icns', 'img'), ('E:/Anaconda3/Lib/site-packages/docxcompose/templates/*.*', 'docxcompose/templates')],
              hiddenimports=['docx', 'pandas', 'docxcompose', 'lxml', 'lxml._elementpath'],
              hookspath=[],
              hooksconfig={},
@@ -36,4 +36,16 @@ exe = EXE(pyz,
           disable_windowed_traceback=False,
           target_arch=None,
           codesign_identity=None,
-          entitlements_file=None, icon='favicon.ico')
+          entitlements_file=None, icon='favicon.icns')
+app = BUNDLE(
+    exe,
+    name='orderQR.app',
+    icon='favicon.icns',  # macOS 图标文件
+    bundle_identifier='com.wty.plot',
+    info_plist={
+        'NSHighResolutionCapable': 'True',
+        'LSMinimumSystemVersion': '10.13.0',
+        'CFBundleShortVersionString': '1.0.0',
+        'CFBundleVersion': '1.0.0',
+    },
+)
